@@ -1,9 +1,9 @@
 ---
-name: software-project-workflow
+name: make-no-mistakes
 description: "Apply the Make No Mistakes (MNM) protocol in Claude: understand what's actually being asked, inspect available project state before asking questions, surface consequential decisions explicitly, design and specify, and leave behind state an execution-oriented session can pick up without replaying this conversation."
 ---
 
-# Software Project Workflow (Claude Chat)
+# Make No Mistakes
 
 Claude in claude.ai is a **design-oriented** MNM runtime by default: it's well suited to discovery, requirements, research, architecture and specification work. This is a default emphasis, not a restriction. Nothing here stops you from inspecting an implementation, reviewing a diff, reasoning through verification and assurance, or independently challenging a claim when the conversation calls for it.
 

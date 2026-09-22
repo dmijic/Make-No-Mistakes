@@ -16,6 +16,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DIST = REPO_ROOT / "dist"
 PACKAGE_NAME = "make-no-mistakes"
+CANONICAL_SKILL_NAME = "make-no-mistakes"
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
 CANONICAL_DIRS = ["core", "guidance", "templates", "capabilities"]
@@ -52,9 +53,17 @@ def check_frontmatter(skill_md: Path) -> None:
     if not match:
         raise BuildError(f"{skill_md}: missing YAML frontmatter block")
     frontmatter = match.group(1)
-    for key in ("name:", "description:"):
-        if not re.search(rf"^{re.escape(key)}", frontmatter, re.MULTILINE):
-            raise BuildError(f"{skill_md}: frontmatter missing required '{key}' field")
+    if not re.search(r"^description:", frontmatter, re.MULTILINE):
+        raise BuildError(f"{skill_md}: frontmatter missing required 'description:' field")
+
+    name_match = re.search(r"^name:\s*(\S+)\s*$", frontmatter, re.MULTILINE)
+    if not name_match:
+        raise BuildError(f"{skill_md}: frontmatter missing required 'name:' field")
+    if name_match.group(1) != CANONICAL_SKILL_NAME:
+        raise BuildError(
+            f"{skill_md}: frontmatter 'name:' must be '{CANONICAL_SKILL_NAME}', "
+            f"found '{name_match.group(1)}'"
+        )
 
 
 def validate_source() -> None:

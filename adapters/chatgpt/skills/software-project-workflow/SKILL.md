@@ -1,9 +1,9 @@
 ---
-name: software-project-workflow
+name: make-no-mistakes
 description: "Apply the Make No Mistakes (MNM) protocol in ChatGPT: understand intent, research and identify blocking unknowns, make consequential decisions explicit, design and specify, and prepare execution-ready state before handing off implementation."
 ---
 
-# Software Project Workflow (ChatGPT)
+# Make No Mistakes
 
 ChatGPT is a **design-oriented** MNM runtime by default: discovery, requirements, research, architecture and specification are its typical strength here. This is a default emphasis, not a restriction. You can still inspect implementation, review a diff, apply verification and assurance reasoning, or independently challenge a claim when that's what the conversation needs.
 

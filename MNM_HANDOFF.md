@@ -3,59 +3,58 @@
 ## Current State
 - Branch: `v2/core-protocol`
 - HEAD: will be the commit created by this handoff (see commit SHA reported after push)
-- Current phase: v2 Phase 5 — Self-Contained Runtime Packaging (complete, pending independent review)
-- Status: Phases 1–4 remain ACCEPTED and unmodified beyond the minimum mechanical adapter wording fixes described below. Phase 6 not started; no MidOut dogfooding started.
+- Current phase: v2 Phase 6 — Dogfood (in progress). DOGFOOD-00 finding fixed in source; **runtime re-test not yet performed**.
+- Status: Phases 1–5 remain ACCEPTED. VERSION unchanged at `2.0.0-dev` (dogfood correction, not a release event). DOGFOOD-01 has not begun.
 
-## What Changed
+## DOGFOOD-00 — Product Identity
 
-Added a deterministic, stdlib-only build system that assembles canonical source plus one runtime adapter into a self-contained package per runtime, with no manual copies of Core anywhere in the repository.
+- **ID:** DOGFOOD-00
+- **Phase:** 6 — Dogfood
+- **Runtime:** ChatGPT
+- **MNM version:** 2.0.0-dev
+- **Observed:** During the first real ChatGPT installation, before DOGFOOD-01 began, the installed Skill exposed legacy "Software Project Workflow (ChatGPT)" identity — frontmatter `name: software-project-workflow` and a `# Software Project Workflow (ChatGPT)` heading — instead of the intended public product identity.
+- **Expected:** Installed product identity is "Make No Mistakes" (machine identifier `make-no-mistakes`), uniformly across all four runtime packages. Runtime remains an orientation/implementation detail inside the adapter, not a separate product identity.
+- **Classification:** Adapter / Product Identity
+- **Severity:** Low
+- **Core defect:** No
+- **Packaging defect:** No
+- **Adapter defect:** Yes
+- **Remediation:** Standardized Skill identity across all four runtime adapters (frontmatter `name:` and top-level heading), and strengthened the packaging validator to enforce the canonical machine identifier on every source and packaged Skill, so this class of drift can't silently reappear.
+- **Verification performed:** Rebuilt all four packages; confirmed via direct inspection that every generated `SKILL.md` now has `name: make-no-mistakes` and `# Make No Mistakes`; confirmed design/execution orientation content is unchanged; confirmed package root remains `make-no-mistakes/`; `git diff --check` clean; full diff reviewed — exactly the identity strings changed, nothing else.
+- **Status:** **FIXED PENDING RUNTIME RE-TEST.** The fix is verified in source and in the build output. It is *not* yet verified against the actual runtime: the rebuilt ChatGPT package has not yet been reinstalled in ChatGPT and observed by the user. Do not treat this as PASS until that reinstall/observation happens.
+- **Next action:** Rebuild (already done, see below) → reinstall the ChatGPT package (`dist/chatgpt/make-no-mistakes.zip` or the `dist/chatgpt/make-no-mistakes/` directory) → user confirms the displayed identity now reads "Make No Mistakes" → only then resume toward DOGFOOD-01. DOGFOOD-01 has not started.
 
-- `VERSION` (new, repo root): single line, `2.0.0-dev` — reflects that v2 is in active development, not a stable public release. No `mnm.yaml` or schema; this is the single package-version source.
-- `scripts/build-packages.py` (new): validates canonical source and all four adapter entry points, cleans and rebuilds `dist/`, builds one package per runtime (`SKILL.md` at root + `VERSION` + `core/` + `guidance/` + `templates/` + `capabilities/`, byte-identical to source), validates each package's structure and content, builds a deterministic ZIP per runtime (fixed `date_time`, normalized permissions, sorted entries, archive root is a single `make-no-mistakes/` directory), and validates ZIP contents against the package directory. Fails loudly with a specific message and exit code 1 on any missing input or validation failure; exit 0 only when all four packages build and validate clean. Python 3 standard library only — no dependencies, no network calls.
-- `.gitignore` (new — none existed before): ignores `dist/` (generated build output, never committed) and `.DS_Store` (recurring untracked noise present in every phase this session; added while creating this file for the first time rather than as separate scope).
-- Minimum mechanical wording fixes to all four `adapters/*/skills/software-project-workflow/SKILL.md` files, making them package-safe (see Source Adapter Changes below). No other change to Phase 4 content — same loop framing, same escalation language, same agent capability model, same everything else.
+## What Changed (this round)
 
-## VERSION Decision
-`2.0.0-dev`, plain text, single line. Chosen over a bare `2.0.0` to avoid implying v2 is already a stable public release — release/stabilization is explicitly a later phase. No prerelease-number scheme (`-dev.1`, etc.) introduced since nothing yet requires distinguishing sequential dev builds.
+- All four `adapters/*/skills/software-project-workflow/SKILL.md`: frontmatter `name: software-project-workflow` → `name: make-no-mistakes`; top-level heading `# Software Project Workflow (<Runtime>)` → `# Make No Mistakes`. Descriptions left unchanged — they're runtime-specific activation metadata and were already good activation signals, per explicit instruction not to mechanically genericize them. Orientation content (design-oriented for chatgpt/claude-chat, execution-oriented for codex/claude-code) and all other body text left unchanged.
+- `scripts/build-packages.py`: `check_frontmatter()` now validates that `name:` is present *and* equals the canonical machine identifier `make-no-mistakes` (was: only checked that some `name:`/`description:` keys existed). Still no YAML dependency — same lightweight regex-based frontmatter check as before, just stricter on the value. Applies to both source adapter files (`validate_source`) and packaged output (`validate_package`), so drift is caught at both points.
+- No change to Core, `guidance/`, `templates/`, `capabilities/`, `VERSION`, or any adapter README.
 
-## Source Adapter Changes Required for Package Safety
-Inspection found the same two source-only patterns duplicated across all four adapter `SKILL.md` files:
-1. All four: an opening-paragraph cross-reference `"— see \`adapters/README.md\`."` pointing at a file that won't exist inside a package. Removed; the "default, not a wall" content it pointed to is already restated later in each file's own body, so nothing needed to be added back.
-2. `claude-code` and `codex` only: a "Canonical source" parenthetical that both pointed at `adapters/README.md` invariant 6 and claimed "self-contained packaging is a later concern" — now false, since this phase is that. Reworded to state the canonical directories are expected alongside the file "as part of the same MNM installation (as siblings of this file in an installed package, or at the repository root in this source repository)" — true in both contexts, no source-only path named.
+## Source Directory Name — Determination
 
-No other wording changed in any adapter. The builder does not rewrite or reinterpret adapter content — it only copies; package safety was made a property of the source files themselves, per the required invariant.
+The task asked me to determine, not assume, whether `skills/software-project-workflow/` (the source subdirectory each adapter's `SKILL.md` lives under) has any user-visible or runtime-semantic effect, before deciding whether to leave it alone.
 
-## Build Implementation
-`python3 scripts/build-packages.py` (also executable directly via its shebang). Single file, ~180 lines, standard library only (`pathlib`, `shutil`, `zipfile`, `filecmp`, `re`, `sys`). No manifest system beyond direct byte-for-byte comparison (`filecmp.cmp`) between packaged and source files — sufficient for four small, flat canonical directories; not worth a hash manifest at this scale.
+**Determination: no effect, left unchanged.** `scripts/build-packages.py`'s `build_package()` copies only the `SKILL.md` *file* into the package root (`shutil.copyfile(ADAPTERS[runtime], package_dir / "SKILL.md")`) — it never copies or references the source subdirectory's name. The generated, installed artifact is `make-no-mistakes/SKILL.md` in every case, regardless of what the source-tree folder was called. The installed Skill's identity is driven entirely by the frontmatter `name:` field (now fixed) and the package's own root directory name (already `make-no-mistakes/` since Phase 5) — never by the source repository's internal path. This is a verified property of the build script, not an assumption about runtime behavior, so no repository-wide rename was performed or needed.
 
-## Generated Artifact Policy
-No existing ignore/release convention was found in the repository (no `.gitignore` existed before this phase). Decision: `dist/` is build output, never committed — added to a new root `.gitignore`. `scripts/build-packages.py` and `VERSION` are committed as source; the four generated package directories and ZIPs under `dist/` are not, and must be regenerated by running the build script.
+## Build Result
+`python3 scripts/build-packages.py` — exit 0, all four packages built and validated with the strengthened name check in effect.
 
-## Validation Performed
-- All 18 items from the task's validation list, checked:
-  - Exactly four package targets defined and built.
-  - Each source adapter `SKILL.md` exists and has valid frontmatter (`name` + `description`) — checked both for source (before build) and for each packaged copy (after build).
-  - All six Core documents, three guidance files, two templates, three capability documents, and `VERSION` all present and required by the validator.
-  - Every generated package matches the target tree exactly (confirmed both by the script's own check and by independent `find`/`unzip` inspection).
-  - Every package's canonical content is byte-identical to source (`filecmp`); every package's `VERSION` is byte-identical to source.
-  - No package contains `MNM_HANDOFF.md`, `.git`, or another runtime's adapter (checked programmatically).
-  - No packaged `SKILL.md` contains an `adapters/` string (checked programmatically — enforces package safety mechanically, not just by inspection).
-  - ZIP contents (names and bytes) verified to match the package directory, both by the script and by manually unzipping `dist/chatgpt/make-no-mistakes.zip` into a scratch directory and inspecting it directly — unpacks into exactly one `make-no-mistakes/` directory, all expected files present, `SKILL.md` and `VERSION` correct.
-  - Deliberately removed `core/PRINCIPLES.md` and reran the build: failed loudly with `build failed: required canonical file missing: core/PRINCIPLES.md` and exit code 1; file restored, rebuild succeeded (exit 0).
-  - `git diff --check` on all source changes — clean.
-  - No network calls anywhere in the build script (no `urllib`/HTTP/subprocess-to-git usage); confirmed no `http://`/`https://` URLs appear anywhere in packaged content.
-
-## Reproducibility Result
-Ran the build twice against unchanged source. Compared `sha256` of every file under `dist/` (including both ZIPs) between the two runs: **identical**, byte-for-byte, including the ZIP archives themselves (fixed `date_time=(1980,1,1,0,0,0)`, normalized permission bits, sorted entry order made this deterministic without additional tooling).
+## Verification
+1. Build ran clean (exit 0) after the fix.
+2. All four generated `SKILL.md` files confirmed to contain `name: make-no-mistakes` (`grep` across `dist/*/make-no-mistakes/SKILL.md`).
+3. All four generated `SKILL.md` files confirmed to have the heading `# Make No Mistakes`.
+4. Descriptions confirmed unchanged and still runtime-specific.
+5. Design/execution orientation content confirmed unchanged and present in all four (`grep` for "design-oriented"/"execution-oriented").
+6. Package root confirmed still `make-no-mistakes/` in all four `dist/<runtime>/` directories.
+7. Confirmed no DOGFOOD-01 work was started.
+8. `git diff --check` — clean.
+9. Full diff reviewed line by line: exactly 8 lines changed across the four adapters (2 each) plus the validator strengthening in `scripts/build-packages.py` — no accidental semantic changes anywhere.
 
 ## Open Questions
-None blocking. One scope note: `LICENSE` was not included in the package (the task's target package shape lists exactly `SKILL.md`, `VERSION`, `core/`, `capabilities/`, `guidance/`, `templates/` — no `LICENSE` entry), so the builder follows that shape exactly rather than adding it. Worth confirming this is intended before any real-world distribution.
-
-## Phase 6 Boundary
-Phase 5 produced source-adapter package-safety fixes, `VERSION`, the build script, and generated (uncommitted) packages under `dist/`. It did not: start MidOut or any other dogfooding, start release/stabilization cleanup (README's remaining v1.1 drift is still deferred, unchanged from Phase 4's handoff), add CI/CD or GitHub Actions, add an installer, or add any update/fetch mechanism. Phase 6 — whatever it turns out to be (dogfooding and/or release cleanup were both explicitly excluded from this phase) — starts from a clean, reviewed Phase 5 state and is not begun here.
+None blocking. The one open item is operational, not a design question: the ChatGPT package needs to actually be reinstalled and visually confirmed before DOGFOOD-00 can be marked fully resolved (see Status above).
 
 ## Next Recommended Step
-Independent review of the Phase 5 diff and a fresh run of `python3 scripts/build-packages.py` (see Review Target below). After sign-off, Phase 6 — not started as part of this unit.
+Reinstall the rebuilt `dist/chatgpt/make-no-mistakes` package (or its `.zip`) in ChatGPT and confirm the displayed Skill identity now reads "Make No Mistakes." Once confirmed, update this record's Status to reflect the passed runtime re-test, and resume toward DOGFOOD-01. Do not begin DOGFOOD-01 before that confirmation.
 
 ## Review Target
-Review `scripts/build-packages.py` end to end (validation logic, deterministic ZIP construction, failure handling), the two source-only reference fixes applied identically across the four adapter `SKILL.md` files (confirm no semantic drift from Phase 4), and `VERSION`'s value. Suggested spot check: run the build, open `dist/claude-code/make-no-mistakes/` and confirm an execution-oriented Claude Code session could understand and apply the complete protocol from that directory alone, with no reference back to this repository's `adapters/` or any other source-only path.
+Confirm the four `SKILL.md` diffs contain only the two intended identity-string changes each (no wording, orientation, or semantic drift), and confirm the packaging-validator change is narrowly scoped (no YAML dependency, no schema, no manifest — just a stricter value check on the existing lightweight frontmatter parser).

@@ -1,9 +1,9 @@
 ---
-name: software-project-workflow
+name: make-no-mistakes
 description: "Apply the Make No Mistakes (MNM) protocol in Codex: recover durable project state, inspect the repository, implement bounded changes, verify with evidence, and escalate rather than silently redesign consequential behavior."
 ---
 
-# Software Project Workflow (Codex)
+# Make No Mistakes
 
 Codex is an **execution-oriented** MNM runtime by default: it operates directly on a repository. This is a default emphasis, not a restriction.
 
