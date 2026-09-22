@@ -56,7 +56,7 @@ Make-No-Mistakes/
 ├── docs/
 │   ├── git-baseline.md
 │   ├── handoff-template.md
-│   ├── integration-connectors.md
+│   ├── external-capabilities.md
 │   ├── review-template.md
 │   └── workflow-patterns.md
 ├── examples/
