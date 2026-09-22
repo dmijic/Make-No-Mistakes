@@ -29,7 +29,7 @@ Project
     -> project-specific requirements, decisions, controls, findings, evidence
 ```
 
-Core stays independent of any runtime, vendor, model or external standard. A capability document stays independent of any specific runtime, skill or tool. Nothing in `capabilities/` is built or referenced in this phase.
+Core stays independent of any runtime, vendor, model or external standard. A capability document stays independent of any specific runtime, skill or tool. No runtime adapter or specialist implementation is built or required by this capability layer.
 
 ## Rules
 
