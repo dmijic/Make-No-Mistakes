@@ -6,7 +6,7 @@ MNM defines an adaptive engineering loop: a set of responsibilities that produce
 
 ```text
 INTENT -> INSPECT -> REQUIRE -> DECIDE -> DESIGN -> CONTROL
-       -> IMPLEMENT -> VERIFY -> EVIDENCE -> CHALLENGE -> COMPLETE
+       -> IMPLEMENT -> VERIFY -> EVIDENCE -> [CHALLENGE WHEN WARRANTED] -> COMPLETE
 ```
 
 Every non-trivial change passes through these responsibilities in spirit. It does not need a dedicated phase, document or commit for each one. For a trivial change the loop compresses to:

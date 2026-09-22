@@ -37,7 +37,7 @@ A capability does not imply a separate agent, a separate skill, a mandatory revi
 For a relevant concern, determine these separately — do not collapse them into one severity/depth label:
 
 1. **Applicability** — is the concern relevant to this system or change at all?
-2. **Required rigor** — how much control and verification depth is warranted, proportional to consequence (`core/WORKFLOW.md` adaptive depth)?
+2. **Control & verification depth** — how much is warranted, proportional to consequence (`core/WORKFLOW.md` adaptive depth)?
 3. **Independence** — does this work warrant independent, specialized challenge (`core/VERIFICATION.md`)?
 
 ## Cross-domain controls

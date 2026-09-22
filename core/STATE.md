@@ -32,9 +32,8 @@ Mark project knowledge with one of:
 - **ASSUMPTION** — treated as true for now but not verified; consequential assumptions should be tracked toward verification.
 - **OPEN** — an unresolved question. An OPEN item should state whether it blocks the current bounded objective.
 - **TBD** — intentionally deferred, not currently relevant.
-- **UNVERIFIED** — no verification has occurred; do not treat as PASS or as fact (see `core/VERIFICATION.md`).
 
-Do not invent additional status taxonomies beyond these.
+Do not invent additional status taxonomies beyond these. UNVERIFIED is a verification result, not a knowledge state — see `core/VERIFICATION.md`.
 
 ## Context classes
 
