@@ -2,7 +2,7 @@
 
 Design-oriented. Ships as a ChatGPT Skill (the open Agent Skills format: a directory with `SKILL.md`).
 
-Not targeted: Custom GPTs (OpenAI is retiring them — creation ends 2026-09-25, shutdown 2026-12-11) or ChatGPT Projects (project-level context/state that MNM can consume, not an installation mechanism for the protocol itself).
+Not targeted: Custom GPTs (OpenAI is retiring this mechanism) or ChatGPT Projects (project-level context/state that MNM can consume, not an installation mechanism for the protocol itself).
 
 ## Install
 

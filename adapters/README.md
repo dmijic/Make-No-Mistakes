@@ -19,9 +19,9 @@ An MNM runtime adapter is a thin runtime-specific entry point that maps a runtim
 |---|---|---|
 | [`chatgpt/`](chatgpt/) | Design-oriented | ChatGPT Skill (Agent Skills format) |
 | [`claude-chat/`](claude-chat/) | Design-oriented | Claude.ai Skill (Agent Skills format) |
-| [`codex/`](codex/) | Execution-oriented | `AGENTS.md` |
+| [`codex/`](codex/) | Execution-oriented | Codex Skill (Agent Skills format) |
 | [`claude-code/`](claude-code/) | Execution-oriented | Claude Code Skill (Agent Skills format) |
 
 Design-oriented and execution-oriented are defaults, not restrictions: a design-oriented runtime may still inspect implementation, review a diff, apply verification and assurance, or independently challenge a claim; an execution-oriented runtime may still identify an invalid requirement, a broken architectural assumption, or a missing consequential decision — and must escalate rather than silently redesign consequential behavior either way. See each adapter's own README and entry point for its specific emphasis.
 
-Three of the four converge on the same open Agent Skills `SKILL.md` format (a directory with `SKILL.md` — YAML frontmatter plus markdown instructions); Codex uses its own persistent, always-loaded `AGENTS.md` layer instead, since MNM there is closer to an ambient operating manual than a single triggered procedure.
+All four adapters use the same open Agent Skills `SKILL.md` format (a directory with `SKILL.md` — YAML frontmatter plus markdown instructions) as their reusable entry point, so MNM stays installed methodology rather than something injected into every project's own instruction file. A runtime's own persistent project-instruction surface — Codex's `AGENTS.md`, Claude Code's `CLAUDE.md`, a chat runtime's Project instructions — may exist alongside MNM and is optional project/runtime context MNM can consume; it is never the MNM installation mechanism (invariant 7).

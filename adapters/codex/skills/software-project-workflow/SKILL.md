@@ -1,10 +1,15 @@
-# Make No Mistakes (MNM) — Codex
+---
+name: software-project-workflow
+description: "Apply the Make No Mistakes (MNM) protocol in Codex: recover durable project state, inspect the repository, implement bounded changes, verify with evidence, and escalate rather than silently redesign consequential behavior."
+---
+
+# Software Project Workflow (Codex)
 
 Codex is an **execution-oriented** MNM runtime by default: it operates directly on a repository. This is a default emphasis, not a restriction — see `adapters/README.md`.
 
 ## Canonical source
 
-This file is a thin entry point, not a copy of MNM. It assumes MNM's `core/`, `guidance/`, `templates/` and `capabilities/` directories are available alongside it (in this repository, at the repository root; in an installed project, wherever MNM was placed — self-contained packaging is a later concern, see `adapters/README.md` invariant 6). If you can't locate them, say so and ask where the MNM installation lives before proceeding — don't invent or restate the protocol from memory.
+This skill is a thin entry point, not a copy of MNM. It assumes the MNM installation's `core/`, `guidance/`, `templates/` and `capabilities/` directories are available alongside it (in this repository, at the repository root; in an installed project, wherever MNM was placed — self-contained packaging is a later concern, see `adapters/README.md` invariant 6). If you can't locate them, say so and ask where the MNM installation lives before proceeding — don't invent or restate the protocol from memory.
 
 Read the relevant canonical files before acting; do not assume their contents:
 
@@ -38,7 +43,7 @@ Use SCOUT / WORKER / REVIEWER / SPECIALIST from `core/EXECUTION.md` proportional
 
 ## Durable state, not project instruction bloat
 
-The repository, its canonical documentation and its Git history are persistent project memory; this session is a temporary working environment (`core/STATE.md`). A project's own `AGENTS.md` (this file, at project scope) is project/runtime context MNM consumes — it does not need to contain MNM's methodology itself; that lives in the canonical directories referenced above. Persist consequential state (decisions, invariants, verification evidence) where it belongs in the project. Use `templates/handoff.md` when a bounded objective genuinely needs to cross a session boundary; a SIMPLE task usually doesn't.
+The repository, its canonical documentation and its Git history are persistent project memory; this session is a temporary working environment (`core/STATE.md`). If the project has its own `AGENTS.md`, treat it as optional project/runtime context MNM consumes alongside the repository — it is not the MNM installation and does not need to contain MNM's methodology; that lives in the canonical directories referenced above. Persist consequential state (decisions, invariants, verification evidence) where it belongs in the project. Use `templates/handoff.md` when a bounded objective genuinely needs to cross a session boundary; a SIMPLE task usually doesn't.
 
 ## Ceremony stays proportional
 

@@ -1,9 +1,11 @@
 # Codex adapter
 
-Execution-oriented. Ships as `AGENTS.md`, Codex's native, persistent, always-loaded project-instruction layer (verified: global `~/.codex/AGENTS.md` → project-root `AGENTS.md` → nested — an open convention beyond OpenAI). MNM is closer to an ambient operating manual than a single triggered procedure, so `AGENTS.md` is the better native fit here than Codex's separate, on-demand Skills mechanism.
+Execution-oriented. Ships as a Codex Skill (the open Agent Skills format: a directory with `SKILL.md`) — the same reusable entry point used by the other three adapters, so MNM stays a reusable installed methodology rather than something injected into every project's own instruction file.
+
+Codex's `AGENTS.md` is a separate, persistent project-instruction surface. A project may have one; MNM treats it as optional project/runtime context to consume, not as the MNM installation mechanism.
 
 ## Install
 
-Place `AGENTS.md` from this directory at your project's root (or reference it from a project's existing `AGENTS.md`), alongside an accessible copy of MNM's `core/`, `guidance/`, `templates/` and `capabilities/` directories. A project's own `AGENTS.md` does not need to duplicate MNM's methodology text — see the file's "Durable state, not project instruction bloat" section.
+Install `skills/software-project-workflow/` from this directory as a Codex skill, alongside an accessible copy of MNM's `core/`, `guidance/`, `templates/` and `capabilities/` directories. Codex loads the skill's name and description first and the full instructions when a task matches.
 
-This is the source adapter. A self-contained, installable package that bundles the canonical directories together with this entry point is Phase 5 work, not done here.
+This is the source adapter. A self-contained, installable package that bundles the canonical directories together with this skill is Phase 5 work, not done here.
