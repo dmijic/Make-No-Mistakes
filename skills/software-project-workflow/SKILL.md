@@ -7,28 +7,19 @@ description: "Apply the Make No Mistakes methodology to orchestrate software pro
 
 Use the **Make No Mistakes** methodology for non-trivial software work.
 
-The methodology's source of truth is the repository-level documentation:
+The methodology's source of truth is the repository-level documentation. Read the relevant files before acting; do not assume their contents:
 
-- `core/PRINCIPLES.md`
-- `core/WORKFLOW.md`
-- `docs/workflow-patterns.md`
-- `docs/git-baseline.md`
-- `docs/handoff-template.md`
-- `docs/review-template.md`
-- `docs/integration-connectors.md`
+- `core/PRINCIPLES.md` — core principles
+- `core/WORKFLOW.md` — Simple/Medium/Complex workflow modes and the persistent-project-memory model
+- `docs/workflow-patterns.md` — sequential/conditional/parallel phase patterns
+- `docs/git-baseline.md` — Git hygiene before baseline commits
+- `docs/handoff-template.md` — phase handoff format
+- `docs/review-template.md` — review checklist
+- `docs/external-capabilities.md` — pattern for using optional external capabilities (source control hosting, issue tracking, docs systems, CI/CD, infrastructure, APIs, communication, data sources)
 
 ## Operating rule
 
-Choose the smallest workflow that safely covers the project's complexity.
-
-### Simple
-`Requirements -> Implementation -> Review -> Commit`
-
-### Medium
-`Research -> Specification/Architecture -> Baseline -> Implementation -> Review -> Commit`
-
-### Complex
-`Discovery -> Research/Probes -> Specification -> Architecture -> Repository Cleanup/Baseline -> Implementation Passes -> Review Loops -> Deployment/Hardening`
+Choose the smallest workflow defined in `core/WORKFLOW.md` that safely covers the project's complexity.
 
 Treat the repository, canonical documentation and Git history as persistent project memory. Treat chat sessions and agents as temporary working environments.
 

@@ -34,4 +34,4 @@ Treat chat sessions and individual AI agents as temporary working environments.
 
 Split work further when a phase becomes too large or mixes incompatible concerns. Do not create phases or agent sessions merely for ceremony.
 
-See `docs/` for workflow patterns, Git baseline guidance, handoff templates, review templates and integration guidance.
+See `docs/` for workflow patterns, Git baseline guidance, handoff templates, review templates and external-capability guidance.
