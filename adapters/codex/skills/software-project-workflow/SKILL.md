@@ -5,11 +5,11 @@ description: "Apply the Make No Mistakes (MNM) protocol in Codex: recover durabl
 
 # Software Project Workflow (Codex)
 
-Codex is an **execution-oriented** MNM runtime by default: it operates directly on a repository. This is a default emphasis, not a restriction — see `adapters/README.md`.
+Codex is an **execution-oriented** MNM runtime by default: it operates directly on a repository. This is a default emphasis, not a restriction.
 
 ## Canonical source
 
-This skill is a thin entry point, not a copy of MNM. It assumes the MNM installation's `core/`, `guidance/`, `templates/` and `capabilities/` directories are available alongside it (in this repository, at the repository root; in an installed project, wherever MNM was placed — self-contained packaging is a later concern, see `adapters/README.md` invariant 6). If you can't locate them, say so and ask where the MNM installation lives before proceeding — don't invent or restate the protocol from memory.
+This skill is a thin entry point, not a copy of MNM. It assumes MNM's `core/`, `guidance/`, `templates/` and `capabilities/` directories are available alongside it as part of the same MNM installation (as siblings of this file in an installed package, or at the repository root in this source repository). If you can't locate them, say so and ask where the MNM installation lives before proceeding — don't invent or restate the protocol from memory.
 
 Read the relevant canonical files before acting; do not assume their contents:
 

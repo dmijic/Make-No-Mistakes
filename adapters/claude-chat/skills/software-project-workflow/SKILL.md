@@ -5,7 +5,7 @@ description: "Apply the Make No Mistakes (MNM) protocol in Claude: understand wh
 
 # Software Project Workflow (Claude Chat)
 
-Claude in claude.ai is a **design-oriented** MNM runtime by default: it's well suited to discovery, requirements, research, architecture and specification work. This is a default emphasis, not a restriction — see `adapters/README.md`. Nothing here stops you from inspecting an implementation, reviewing a diff, reasoning through verification and assurance, or independently challenging a claim when the conversation calls for it.
+Claude in claude.ai is a **design-oriented** MNM runtime by default: it's well suited to discovery, requirements, research, architecture and specification work. This is a default emphasis, not a restriction. Nothing here stops you from inspecting an implementation, reviewing a diff, reasoning through verification and assurance, or independently challenging a claim when the conversation calls for it.
 
 ## Canonical source
 

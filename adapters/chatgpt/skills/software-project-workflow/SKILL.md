@@ -5,7 +5,7 @@ description: "Apply the Make No Mistakes (MNM) protocol in ChatGPT: understand i
 
 # Software Project Workflow (ChatGPT)
 
-ChatGPT is a **design-oriented** MNM runtime by default: discovery, requirements, research, architecture and specification are its typical strength here. This is a default emphasis, not a restriction — see `adapters/README.md`. You can still inspect implementation, review a diff, apply verification and assurance reasoning, or independently challenge a claim when that's what the conversation needs.
+ChatGPT is a **design-oriented** MNM runtime by default: discovery, requirements, research, architecture and specification are its typical strength here. This is a default emphasis, not a restriction. You can still inspect implementation, review a diff, apply verification and assurance reasoning, or independently challenge a claim when that's what the conversation needs.
 
 ## Canonical source
 

@@ -3,53 +3,59 @@
 ## Current State
 - Branch: `v2/core-protocol`
 - HEAD: will be the commit created by this handoff (see commit SHA reported after push)
-- Current phase: v2 Phase 4 — Runtime Adapters (stable, review fixes applied, pending independent re-review)
-- Status: Phases 1–3 remain ACCEPTED. Phase 4's initial implementation had one blocking architecture issue and two minor documentation issues, both now fixed. Phase 5 not started.
+- Current phase: v2 Phase 5 — Self-Contained Runtime Packaging (complete, pending independent review)
+- Status: Phases 1–4 remain ACCEPTED and unmodified beyond the minimum mechanical adapter wording fixes described below. Phase 6 not started; no MidOut dogfooding started.
 
-## What Changed (this round — independent-review fixes on top of Phase 4)
+## What Changed
 
-**1. BLOCKING, fixed — Codex adapter architecture.** The initial Codex adapter shipped as `adapters/codex/AGENTS.md`, instructing installation at a project's root. Independent review found this violated the accepted boundary (MNM installation ≠ project/runtime instruction state): `AGENTS.md` is Codex's own persistent project-instruction surface and must not be the carrier of the MNM protocol.
-- Removed `adapters/codex/AGENTS.md`.
-- Added `adapters/codex/skills/software-project-workflow/SKILL.md` — same execution-oriented semantic content (canonical-source note, the `core/WORKFLOW.md` loop framed for execution entry, agent capability model, proportional ceremony), now delivered as the same reusable Agent Skills format the other three adapters use.
-- Rewrote `adapters/codex/README.md`: install instructions now describe installing the Skill; a project's own `AGENTS.md`, if it has one, is described as optional project/runtime context MNM can consume, not the installation mechanism.
-- Updated `adapters/README.md`: the adapter table now lists "Codex Skill (Agent Skills format)"; the closing paragraph now states all four adapters share the reusable Skill entry point, and names `AGENTS.md`/`CLAUDE.md`/Project instructions collectively as optional project/runtime context a runtime may have alongside MNM — never the installation mechanism (invariant 7).
-- No `AGENTS.md` template was added anywhere else, per instruction.
+Added a deterministic, stdlib-only build system that assembles canonical source plus one runtime adapter into a self-contained package per runtime, with no manual copies of Core anywhere in the repository.
 
-**2. MINOR, fixed — Claude Chat plan-availability wording.** `adapters/claude-chat/README.md` stated Skills were unavailable on the Free plan; current Anthropic documentation says Skills are available on Free, Pro, Max, Team and Enterprise (subject to required capabilities/settings). Removed the plan-specific availability sentence entirely rather than restate a corrected but still-volatile commercial fact.
+- `VERSION` (new, repo root): single line, `2.0.0-dev` — reflects that v2 is in active development, not a stable public release. No `mnm.yaml` or schema; this is the single package-version source.
+- `scripts/build-packages.py` (new): validates canonical source and all four adapter entry points, cleans and rebuilds `dist/`, builds one package per runtime (`SKILL.md` at root + `VERSION` + `core/` + `guidance/` + `templates/` + `capabilities/`, byte-identical to source), validates each package's structure and content, builds a deterministic ZIP per runtime (fixed `date_time`, normalized permissions, sorted entries, archive root is a single `make-no-mistakes/` directory), and validates ZIP contents against the package directory. Fails loudly with a specific message and exit code 1 on any missing input or validation failure; exit 0 only when all four packages build and validate clean. Python 3 standard library only — no dependencies, no network calls.
+- `.gitignore` (new — none existed before): ignores `dist/` (generated build output, never committed) and `.DS_Store` (recurring untracked noise present in every phase this session; added while creating this file for the first time rather than as separate scope).
+- Minimum mechanical wording fixes to all four `adapters/*/skills/software-project-workflow/SKILL.md` files, making them package-safe (see Source Adapter Changes below). No other change to Phase 4 content — same loop framing, same escalation language, same agent capability model, same everything else.
 
-**3. MINOR, fixed — Claude Chat upload instructions.** Corrected to describe packaging `skills/software-project-workflow/` as a `.zip` and uploading it via Settings → Customize → Skills, matching current Anthropic documentation.
+## VERSION Decision
+`2.0.0-dev`, plain text, single line. Chosen over a bare `2.0.0` to avoid implying v2 is already a stable public release — release/stabilization is explicitly a later phase. No prerelease-number scheme (`-dev.1`, etc.) introduced since nothing yet requires distinguishing sequential dev builds.
 
-**4. Volatile-fact sweep.** Reviewed all four adapter READMEs for other unnecessary volatile claims. Removed the specific Custom GPT retirement dates from `adapters/chatgpt/README.md` (kept the qualitative "OpenAI is retiring this mechanism," dropped the calendar dates, which will go stale and aren't needed to justify not targeting Custom GPTs). No other volatile plan/date/UI claims found in `claude-code/README.md` or `codex/README.md`. Did not broaden this into a general release-documentation cleanup, per instruction.
+## Source Adapter Changes Required for Package Safety
+Inspection found the same two source-only patterns duplicated across all four adapter `SKILL.md` files:
+1. All four: an opening-paragraph cross-reference `"— see \`adapters/README.md\`."` pointing at a file that won't exist inside a package. Removed; the "default, not a wall" content it pointed to is already restated later in each file's own body, so nothing needed to be added back.
+2. `claude-code` and `codex` only: a "Canonical source" parenthetical that both pointed at `adapters/README.md` invariant 6 and claimed "self-contained packaging is a later concern" — now false, since this phase is that. Reworded to state the canonical directories are expected alongside the file "as part of the same MNM installation (as siblings of this file in an installed package, or at the repository root in this source repository)" — true in both contexts, no source-only path named.
 
-## Decisions Made
-- Preserved semantic behavior exactly when converting Codex from `AGENTS.md` to a Skill: the same canonical-source note, the same execution-oriented loop framing, the same agent-capability-model and proportional-ceremony sections — only the delivery mechanism and install instructions changed.
-- `adapters/README.md`'s closing paragraph now generalizes the "optional project/runtime context, not an installation mechanism" point across all three native project-instruction surfaces (`AGENTS.md`, `CLAUDE.md`, Project instructions) instead of only Codex, since the same principle applies uniformly and stating it once avoids repeating it per-adapter.
+No other wording changed in any adapter. The builder does not rewrite or reinterpret adapter content — it only copies; package safety was made a property of the source files themselves, per the required invariant.
 
-## Files Changed (this round)
-- Removed: `adapters/codex/AGENTS.md`.
-- Added: `adapters/codex/skills/software-project-workflow/SKILL.md`.
-- Modified: `adapters/codex/README.md`, `adapters/README.md`, `adapters/chatgpt/README.md`, `adapters/claude-chat/README.md`.
-- Untouched: `adapters/chatgpt/skills/.../SKILL.md`, `adapters/claude-chat/skills/.../SKILL.md`, `adapters/claude-code/` (entirely), Core, `guidance/`, `templates/`, `capabilities/`.
+## Build Implementation
+`python3 scripts/build-packages.py` (also executable directly via its shebang). Single file, ~180 lines, standard library only (`pathlib`, `shutil`, `zipfile`, `filecmp`, `re`, `sys`). No manifest system beyond direct byte-for-byte comparison (`filecmp.cmp`) between packaged and source files — sufficient for four small, flat canonical directories; not worth a hash manifest at this scale.
 
-## Verification
-- Confirmed exactly four adapter directories exist under `adapters/`, all four now using the reusable Agent Skills `SKILL.md` entry point.
-- Confirmed no `AGENTS.md` remains anywhere under `adapters/` (`find -iname AGENTS.md` — no output).
-- Confirmed Codex no longer requires project-root `AGENTS.md` for MNM; its README and Skill both describe `AGENTS.md` as optional, consumable project context.
-- Confirmed `adapters/README.md` states project `AGENTS.md`/`CLAUDE.md`/Project instructions are optional context, never MNM protocol carriers, for all runtimes uniformly.
-- Confirmed all adapters still state full MNM protocol access, and design/execution orientation is unchanged (chatgpt/claude-chat still design-oriented; codex/claude-code still execution-oriented) — verified via grep across all four `SKILL.md` files.
-- Confirmed no Core duplication (grep for Core-specific prose inside `adapters/` — no matches) and `core/`/`guidance/`/`templates/`/`capabilities/` remain free of runtime/vendor names.
-- Confirmed no Phase 5 packaging artifacts exist.
-- `git diff --cached --check` — clean.
-- Full diff reviewed: 5 files changed (1 removed, 1 added, 3 modified), matches the bounded fix scope exactly — no unrelated files touched.
+## Generated Artifact Policy
+No existing ignore/release convention was found in the repository (no `.gitignore` existed before this phase). Decision: `dist/` is build output, never committed — added to a new root `.gitignore`. `scripts/build-packages.py` and `VERSION` are committed as source; the four generated package directories and ZIPs under `dist/` are not, and must be regenerated by running the build script.
+
+## Validation Performed
+- All 18 items from the task's validation list, checked:
+  - Exactly four package targets defined and built.
+  - Each source adapter `SKILL.md` exists and has valid frontmatter (`name` + `description`) — checked both for source (before build) and for each packaged copy (after build).
+  - All six Core documents, three guidance files, two templates, three capability documents, and `VERSION` all present and required by the validator.
+  - Every generated package matches the target tree exactly (confirmed both by the script's own check and by independent `find`/`unzip` inspection).
+  - Every package's canonical content is byte-identical to source (`filecmp`); every package's `VERSION` is byte-identical to source.
+  - No package contains `MNM_HANDOFF.md`, `.git`, or another runtime's adapter (checked programmatically).
+  - No packaged `SKILL.md` contains an `adapters/` string (checked programmatically — enforces package safety mechanically, not just by inspection).
+  - ZIP contents (names and bytes) verified to match the package directory, both by the script and by manually unzipping `dist/chatgpt/make-no-mistakes.zip` into a scratch directory and inspecting it directly — unpacks into exactly one `make-no-mistakes/` directory, all expected files present, `SKILL.md` and `VERSION` correct.
+  - Deliberately removed `core/PRINCIPLES.md` and reran the build: failed loudly with `build failed: required canonical file missing: core/PRINCIPLES.md` and exit code 1; file restored, rebuild succeeded (exit 0).
+  - `git diff --check` on all source changes — clean.
+  - No network calls anywhere in the build script (no `urllib`/HTTP/subprocess-to-git usage); confirmed no `http://`/`https://` URLs appear anywhere in packaged content.
+
+## Reproducibility Result
+Ran the build twice against unchanged source. Compared `sha256` of every file under `dist/` (including both ZIPs) between the two runs: **identical**, byte-for-byte, including the ZIP archives themselves (fixed `date_time=(1980,1,1,0,0,0)`, normalized permission bits, sorted entry order made this deterministic without additional tooling).
 
 ## Open Questions
-None blocking.
+None blocking. One scope note: `LICENSE` was not included in the package (the task's target package shape lists exactly `SKILL.md`, `VERSION`, `core/`, `capabilities/`, `guidance/`, `templates/` — no `LICENSE` entry), so the builder follows that shape exactly rather than adding it. Worth confirming this is intended before any real-world distribution.
 
-## Known Problems / Risks
-Carried over, unchanged (not this round's scope): `README.md` still shows a stale 2-file `core/` listing, v1.1 principles bullets, and no `capabilities/` mention — deferred to a future repository/release cleanup phase.
+## Phase 6 Boundary
+Phase 5 produced source-adapter package-safety fixes, `VERSION`, the build script, and generated (uncommitted) packages under `dist/`. It did not: start MidOut or any other dogfooding, start release/stabilization cleanup (README's remaining v1.1 drift is still deferred, unchanged from Phase 4's handoff), add CI/CD or GitHub Actions, add an installer, or add any update/fetch mechanism. Phase 6 — whatever it turns out to be (dogfooding and/or release cleanup were both explicitly excluded from this phase) — starts from a clean, reviewed Phase 5 state and is not begun here.
 
 ## Next Recommended Step
-Independent re-review of this fix round (see Review Target below). After sign-off, Phase 5 — not started as part of this unit.
+Independent review of the Phase 5 diff and a fresh run of `python3 scripts/build-packages.py` (see Review Target below). After sign-off, Phase 6 — not started as part of this unit.
 
 ## Review Target
-Review the diff on `adapters/codex/` (AGENTS.md → Skill conversion preserves semantic content), `adapters/README.md` (invariant 7 now applies uniformly across all native project-instruction surfaces), and `adapters/{chatgpt,claude-chat}/README.md` (plan-availability and upload-instruction corrections, retirement-date removal). Confirm the Codex Skill's execution-oriented content reads as equivalent to the original `AGENTS.md` version, just re-delivered.
+Review `scripts/build-packages.py` end to end (validation logic, deterministic ZIP construction, failure handling), the two source-only reference fixes applied identically across the four adapter `SKILL.md` files (confirm no semantic drift from Phase 4), and `VERSION`'s value. Suggested spot check: run the build, open `dist/claude-code/make-no-mistakes/` and confirm an execution-oriented Claude Code session could understand and apply the complete protocol from that directory alone, with no reference back to this repository's `adapters/` or any other source-only path.
