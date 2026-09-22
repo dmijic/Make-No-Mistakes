@@ -67,4 +67,4 @@ A session should:
 9. record unresolved state
 10. end
 
-**Session continuity must never be required for project continuity.** A handoff is state transfer, not a conversation transcript — see `docs/handoff-template.md` for the transfer format.
+**Session continuity must never be required for project continuity.** A handoff is state transfer, not a conversation transcript — see `templates/handoff.md` for the transfer format.

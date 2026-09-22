@@ -53,12 +53,13 @@ Make-No-Mistakes/
 ├── core/
 │   ├── PRINCIPLES.md
 │   └── WORKFLOW.md
-├── docs/
+├── guidance/
 │   ├── git-baseline.md
-│   ├── handoff-template.md
 │   ├── external-capabilities.md
-│   ├── review-template.md
 │   └── workflow-patterns.md
+├── templates/
+│   ├── handoff.md
+│   └── review.md
 ├── examples/
 └── skills/
     └── software-project-workflow/

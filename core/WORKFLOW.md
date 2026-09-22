@@ -58,4 +58,4 @@ Split work further when a responsibility becomes too large or mixes incompatible
 
 Repository, canonical documentation, version history and verification evidence form persistent project memory; chat and agent sessions are temporary working environments. See `core/STATE.md` for the full semantics of what is durable, when to persist it, and how a session should begin and end.
 
-See `docs/workflow-patterns.md` for sequential, conditional and parallel composition of the loop across a larger project.
+See `guidance/workflow-patterns.md` for sequential, conditional and parallel composition of the loop across a larger project.

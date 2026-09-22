@@ -18,7 +18,7 @@ A bounded execution task may need, according to its scope and consequence:
 - assurance expectations
 - authority boundary
 
-This is a semantic contract, not necessarily a separate file. For SIMPLE work it may be a sentence; for COMPLEX work it may warrant a written handoff (`docs/handoff-template.md`).
+This is a semantic contract, not necessarily a separate file. For SIMPLE work it may be a sentence; for COMPLEX work it may warrant a written handoff (`templates/handoff.md`).
 
 ## Requirement trace
 

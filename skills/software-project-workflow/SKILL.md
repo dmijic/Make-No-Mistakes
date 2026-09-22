@@ -11,11 +11,11 @@ The methodology's source of truth is the repository-level documentation. Read th
 
 - `core/PRINCIPLES.md` — core principles
 - `core/WORKFLOW.md` — Simple/Medium/Complex workflow modes and the persistent-project-memory model
-- `docs/workflow-patterns.md` — sequential/conditional/parallel phase patterns
-- `docs/git-baseline.md` — Git hygiene before baseline commits
-- `docs/handoff-template.md` — phase handoff format
-- `docs/review-template.md` — review checklist
-- `docs/external-capabilities.md` — pattern for using optional external capabilities (source control hosting, issue tracking, docs systems, CI/CD, infrastructure, APIs, communication, data sources)
+- `guidance/workflow-patterns.md` — sequential/conditional/parallel phase patterns
+- `guidance/git-baseline.md` — Git hygiene before baseline commits
+- `templates/handoff.md` — phase handoff format
+- `templates/review.md` — review checklist
+- `guidance/external-capabilities.md` — pattern for using optional external capabilities (source control hosting, issue tracking, docs systems, CI/CD, infrastructure, APIs, communication, data sources)
 
 ## Operating rule
 
