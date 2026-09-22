@@ -3,57 +3,52 @@
 ## Current State
 - Branch: `v2/core-protocol`
 - HEAD: will be the commit created by this handoff (see commit SHA reported after push)
-- Current phase: v2 Phase 2 — Guidance + Templates (complete, pending independent review)
-- Status: Phase 1 Core remains ACCEPTED and unmodified beyond the two prior mechanical path cross-references described below. Phase 2 migrates supporting docs; not yet reviewed. Phase 3 not started.
+- Current phase: v2 Phase 3 — Capability System + First Capabilities (complete, pending independent review)
+- Status: Phase 1 Core and Phase 2 Guidance + Templates remain ACCEPTED and unmodified this round. Phase 3 adds the capability system and its first two capabilities. Phase 4 not started.
 
 ## What Changed
-Migrated the five v1.1 `docs/` files into two new directories, rewritten to align with the accepted v2 Core and cross-reference it instead of restating it:
+Added a new `capabilities/` directory implementing the capability layer that `core/ASSURANCE.md` already defines the generic contract for:
 
-- `docs/git-baseline.md` → `guidance/git-baseline.md` — same safety checks; commits reframed as durable/reviewable states (not mandatory phase boundaries); authority requirement for commit/push/deploy/destructive ops preserved.
-- `docs/external-capabilities.md` → `guidance/external-capabilities.md` — same category list and discover→authority→boundary→action→verify→persist pattern; terminology aligned to bounded authority, minimum sufficient context, durable state, verification evidence.
-- `docs/workflow-patterns.md` → `guidance/workflow-patterns.md` — same sequential/conditional/parallel patterns; added the parallel-justification rule, the "don't parallelize until contracts/ownership are stable" rule, and "merge through durable state and verification, not assumed shared session context."
-- `docs/handoff-template.md` → `templates/handoff.md` — redesigned as a minimal state-transfer artifact built from `core/EXECUTION.md`'s execution-contract fields and `core/STATE.md`'s handoff semantics; explicit that it transfers state, not conversation history, and that SIMPLE work may need none or a few lines.
-- `docs/review-template.md` → `templates/review.md` — replaced the v1.1 generic checklist with an adversarial-challenge template aligned to `core/VERIFICATION.md`/`core/ASSURANCE.md`: bounded reviewer context, explicit challenge targets, and Core's finding schema (including provenance tags). No OWASP categories or domain-specific checklists.
+- `capabilities/README.md` — defines what a capability is and isn't (not necessarily a separate agent/skill/checklist/standard/tool integration/mandatory review), the four-layer separation (Core → Capability → Runtime adapter/specialist implementation → Project), the two governing rules (no duplicating Core rules; no claiming applicability by mere existence — applicability/control & verification depth/independence stay separate decisions per `core/ASSURANCE.md`), and an index of the two capabilities that exist today plus a note that other recognized assurance lenses don't get a document until specified and tested.
+- `capabilities/application-security.md` — fills the seven-field capability contract (Purpose, Applicability signals, Design concerns, Control guidance, Verification guidance, Challenge method, Expected evidence) with MNM's own application-security expertise. No OWASP category names or descriptions.
+- `capabilities/genai-security.md` — fills the same contract for systems that use models or agentic AI, including the generalized principle that AI interpretation must not silently become authoritative deterministic fact, and that model-consumed content is untrusted even when it's an authoritative stored artifact elsewhere in the system. No OWASP GenAI/LLM Top 10 category names or descriptions.
 
-`docs/` was deleted entirely (no compatibility stub — nothing in the repo needed the old path once cross-references were updated, so a stub would have been dead weight, not a real compatibility bridge).
+Both capability documents: state design/control guidance before challenge/verification (shift-left, not audit-only); state applicability is signal-based, never automatic; state verification/challenge steps apply only where warranted, not as a mandatory checklist; cross-reference `core/EXECUTION.md` (mature primitives, authority) and `core/VERIFICATION.md` (verification classes, independent challenge, finding schema) instead of restating them; include a Cross-domain note that a capability classifies and challenges concerns rather than owning a separate copy of controls another lens also relies on; and note, as an optional implementation-level detail, that a specialized runtime-level security-review implementation can satisfy or strengthen the Challenge Method when available — never fetched, installed, or made mandatory here.
 
-Cross-references updated for consistency (not a Core redesign): `core/STATE.md`, `core/WORKFLOW.md`, `core/EXECUTION.md` now point at `guidance/`/`templates/` instead of `docs/`. `skills/software-project-workflow/SKILL.md` and `README.md` had their 5 `docs/*.md` path references mechanically swapped to the new locations — narrow, path-only edits, nothing else in either file touched.
-
-Untouched: all six Core documents' substantive content, `CHANGELOG.md` (historical record), everything else in `README.md` beyond the 5 path strings, and everything else in `SKILL.md` beyond the same 5 path strings.
+Nothing in Core, `guidance/`, `templates/`, `README.md`, `CHANGELOG.md`, or `skills/` was touched this round.
 
 ## Decisions Made
-- No compatibility stubs left at the old `docs/*.md` paths — see rationale above.
-- `SKILL.md` and `README.md` are both "adapter/non-Core" surfaces that were out of the original narrow scope, but both contained literal stale-path references after the migration; per explicit user direction, both got the same narrow exception: mechanical path-string swap only, no other modernization.
-- `guidance/` content stays optional practical guidance; `templates/` content stays optional artifacts. Neither introduces new mandatory ceremony, scoring, or checklists beyond what Core already requires.
+- Only the two capabilities with real evidence (application security, GenAI/LLM security) were written; no other assurance lens got a capability document, per explicit scope.
+- No reference to any specific external security-review implementation (by name or otherwise) was added — the capability documents describe the *relationship* (an implementation can strengthen the Challenge Method) without naming, requiring, or depending on one.
+- `capabilities/README.md`'s "Runtime adapter / specialist implementation" layer is described conceptually only; nothing was built for it this phase.
 
 ## Files Changed
-- Deleted: `docs/git-baseline.md`, `docs/external-capabilities.md`, `docs/workflow-patterns.md`, `docs/handoff-template.md`, `docs/review-template.md`, and the now-empty `docs/` directory.
-- Added: `guidance/git-baseline.md`, `guidance/external-capabilities.md`, `guidance/workflow-patterns.md`, `templates/handoff.md`, `templates/review.md`.
-- Modified (cross-reference only): `core/STATE.md`, `core/WORKFLOW.md`, `core/EXECUTION.md`, `skills/software-project-workflow/SKILL.md`, `README.md`.
-- Modified (rewritten to current state): `MNM_HANDOFF.md` (this file).
-- Core substantive content, `CHANGELOG.md`, `CONTRIBUTING.md`, `examples/`, `LICENSE`: untouched.
+- Added: `capabilities/README.md`, `capabilities/application-security.md`, `capabilities/genai-security.md`.
+- Everything else in the repository: untouched.
 
 ## Verification
-- `grep` for all 5 old canonical paths (`docs/git-baseline`, `docs/handoff-template`, `docs/external-capabilities`, `docs/review-template`, `docs/workflow-patterns`) across the repo: zero live references remain; only `CHANGELOG.md`'s two v1.1 historical entries still contain the old paths, intentionally (historical record, not a live reference).
-- Confirmed `docs/` no longer exists and no duplicate old/new canonical copies remain anywhere.
-- Re-read `guidance/*.md` and `templates/*.md` against all six Core files: no restated Core prose, no new mandatory ceremony, no contradiction found. Both templates explicitly state they're optional; `templates/review.md` and `templates/handoff.md` both explicitly say SIMPLE work doesn't require them.
-- `grep -iE "claude|chatgpt|codex|openai|anthropic|gpt|owasp"` across the new files: no positive matches (one intentional negative OWASP reference in `templates/review.md`, mirroring `core/ASSURANCE.md`'s existing pattern).
-- `git diff --check`: clean.
-- Full `git status` reviewed: exactly the files listed above changed; `.DS_Store` remains untracked and excluded from the commit.
+- Re-read all three new files against `core/ASSURANCE.md` side by side: the seven-field capability contract is filled, not redefined; nothing contradicts Core.
+- Grepped both capability files for OWASP Top-10 / LLM-Top-10 category labels (Broken Access Control, Insecure Design, Excessive Agency, System Prompt Leakage, Unbounded Consumption, etc.) and "OWASP" itself: no matches. "Prompt injection" appears only as the generic, pre-existing security-industry term the user's own spec explicitly required as design-concern/verification content — not as a copied Top-10 category description.
+- Confirmed both files state applicability is signal-based ("signals, not an exhaustive checklist") and that verification/challenge steps are qualified ("only where applicable" / "not all mandatory for every application").
+- Confirmed section order in both capability files is Purpose → Applicability signals → Design concerns → Control guidance → Verification guidance → Challenge method → Expected evidence — design/control guidance precedes challenge/verification in both.
+- `grep -iE "claude|chatgpt|codex|openai|anthropic|gpt"` across the new files: no matches.
+- Confirmed exactly three new files exist under `capabilities/`, nothing else created.
+- `git diff --cached --check`: clean.
+- Full `git status` reviewed: only the three new files staged; `.DS_Store` remains untracked and excluded.
 
 ## Open Questions
-None blocking. Two known, out-of-scope drift items are recorded below for a later cleanup pass rather than resolved now.
+None blocking.
 
 ## Known Problems / Risks
-- `README.md` still describes a two-file `core/` (`PRINCIPLES.md`, `WORKFLOW.md`) and still lists v1.1-era principles bullets that predate the accepted v2 Core. Only its `docs/*` path references were fixed this round, per explicit scope. Needs a dedicated repository/release cleanup pass, not a Phase 2/3 concern.
-- `skills/software-project-workflow/SKILL.md` still lists only `core/PRINCIPLES.md` and `core/WORKFLOW.md` as canonical sources (missing `STATE.md`, `EXECUTION.md`, `VERIFICATION.md`, `ASSURANCE.md`), and its per-file descriptions ("review checklist", "phase handoff format") reflect v1.1 semantics, not the redesigned `templates/review.md`/`templates/handoff.md`. Only its `docs/*` path references were fixed this round, per the same narrow scope. This is adapter/skill content and belongs to a future skills-alignment phase, not Phase 2's guidance/templates migration.
+- Carried over, unchanged from Phase 2 (not this round's scope): `README.md` still describes a two-file `core/` and v1.1-era principles bullets; `skills/software-project-workflow/SKILL.md` still lists only `core/PRINCIPLES.md`/`core/WORKFLOW.md` as canonical sources and has stale per-file descriptions. Both are candidates for a future repository/skills cleanup phase, not Phase 3 or Phase 4.
+- `capabilities/README.md` names a "Runtime adapter / specialist implementation" layer that has no concrete implementation yet — intentional per this phase's scope, but worth noting so a future phase doesn't mistake the conceptual description for a built adapter.
 
 ## Next Recommended Step
-Independent review of the Phase 2 diff (see Review Target below). After sign-off, Phase 3 scoping — not started as part of this unit. The two known-drift items above (README, SKILL.md) are candidates for a future cleanup phase, separate from Phase 3's own scope.
+Independent review of the Phase 3 diff (see Review Target below). After sign-off, Phase 4 scoping — not started as part of this unit.
 
 ## Review Target
-Review the full Phase 2 diff: the five new `guidance/`+`templates/` files against the five deleted `docs/` files (content realignment, not just relocation), and the five cross-reference-only edits (`core/STATE.md`, `core/WORKFLOW.md`, `core/EXECUTION.md`, `SKILL.md`, `README.md`). Specifically check:
-- No Core prose was restated in `guidance/`/`templates/` instead of cross-referenced.
-- No new mandatory ceremony was introduced for SIMPLE work.
-- The `SKILL.md`/`README.md` edits are genuinely path-only, with no other content drift introduced.
-- The two known-drift items above are acceptable to defer rather than fix now.
+Review the three new files in `capabilities/` against `core/ASSURANCE.md`'s capability contract and against the task's anti-goals. Specifically check:
+- Neither capability document is, in substance, an OWASP checklist with the labels swapped out.
+- The GenAI capability's "AI interpretation must not silently become authoritative fact" principle reads as general system guidance, not tied to any specific prior case.
+- Applicability, control & verification depth, and independence are kept as separate, non-automatic decisions in both files.
+- No capability implies a mandatory review phase, a required external tool, or a specific runtime.
