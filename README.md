@@ -53,21 +53,22 @@ Make-No-Mistakes/
 ├── core/
 │   ├── PRINCIPLES.md
 │   └── WORKFLOW.md
-├── docs/
+├── guidance/
 │   ├── git-baseline.md
-│   ├── handoff-template.md
 │   ├── external-capabilities.md
-│   ├── review-template.md
 │   └── workflow-patterns.md
+├── templates/
+│   ├── handoff.md
+│   └── review.md
 ├── examples/
-└── skills/
-    └── software-project-workflow/
-        ├── SKILL.md
-        └── agents/
-            └── openai.yaml
+└── adapters/
+    ├── chatgpt/
+    ├── claude-chat/
+    ├── codex/
+    └── claude-code/
 ```
 
-The repository contains the methodology. `skills/software-project-workflow` is an adapter for AI environments that support skills.
+The repository contains the methodology. `adapters/` holds thin, runtime-specific entry points — see `adapters/README.md`.
 
 ## Principles
 
@@ -83,7 +84,7 @@ The repository contains the methodology. `skills/software-project-workflow` is a
 
 ## Using it
 
-Clone or download the repository and give it to your AI coding environment as project guidance. If the environment supports skills, use the `skills/software-project-workflow` adapter.
+Clone or download the repository and give it to your AI coding environment as project guidance. See `adapters/` for the runtime-specific entry point (ChatGPT, Claude Chat, Codex, Claude Code).
 
 ## License
 
